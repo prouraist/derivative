@@ -12,7 +12,7 @@ void deleteSpaces(string &s)
 string d(string s)
 {
 	int bracket=0;
-	
+
 	for(int i = s.size(); i>=0; i--)
 	{
 		if (s[i]=='(')
@@ -30,11 +30,11 @@ string d(string s)
 				   	   s.substr(0, i) + ")*(" + d(s.substr(i+1)) + ")";
 			}
 			if (s[i]=='/')
-				return "((" + d(s.substr(0, i)) + ")*(" + s.substr(i + 1) + ")-(" + 
-					   s.substr(0, i) + ")*(" + d(s.substr(i + 1)) + "))/((" + s.substr(i + 1) + ")**2)";	
+				return "((" + d(s.substr(0, i)) + ")*(" + s.substr(i + 1) + ")-(" +
+					   s.substr(0, i) + ")*(" + d(s.substr(i + 1)) + "))/((" + s.substr(i + 1) + ")**2)";
 		}
 	}
-	
+
 	bracket = 0;
 
 	for (unsigned i = 0; i < s.size(); ++i)
@@ -44,42 +44,56 @@ string d(string s)
 		else if (s[i]==')')
 			bracket--;
 		else if (!bracket && s[i] == '*' && s[i + 1] == '*'){
-			return "(" + s + ")*(" + d(s.substr(i + 2) + "*ln(" + s.substr(0, i) + ")") + ")";
+            string st = s.substr(i+2);
+            string x = s.substr(0, i);
+
+            bool o1 = false;
+            bool o2 = false;
+            for(int u=0; u<st.size(); u++)
+                if (st[u]=='x') o1 = true;
+            for(int u=0; u<x.size(); u++)
+                if (x[u]=='x') o2 = true;
+
+            if (o1 && o2)
+                return "(" + s + ")*(" + d(s.substr(i + 2) + "*ln(" + s.substr(0, i) + ")") + ")";
+            if (o1)
+                return "((" + s + ")*ln(" + st + ")*(" + d(st) + "))";
+            if (o2)
+                return "(" + st + ")*((" + x + ")**(" + st + "-1))*(" + d(x) + ")";
 		}
 	}
 
 	if (s[0] == '(' && s[s.size() - 1] == ')')
 		return d(s.substr(1, s.size() - 2));
 
-
-	if ((int)s.find("ln")!=-1)
+	if ((int)s.find("ln")==0)
 		return "1/" + s.substr(2) + "*(" + d(s.substr(2)) + ")";
 
-	if ((int)s.find("arctg")!=-1)
+	if ((int)s.find("arctg")==0)
 		return "1/(1+" + s.substr(5) + "**2)*("+ d(s.substr(5)) + ")";
 
-	if ((int)s.find("arcctg")!=-1)
+	if ((int)s.find("arcctg")==0)
 		return "(-1)/(1+" + s.substr(6) + "**2)*(" + d(s.substr(6)) + ")";
 
-	if ((int)s.find("arcsin")!=-1)
+	if ((int)s.find("arcsin")==0)
 		return "1/((1-" + s.substr(6) + "**2)**0.5)*(" + d(s.substr(6)) + ")";
 
-	if ((int)s.find("arccos")!=-1)
+	if ((int)s.find("arccos")==0)
 		return "(-1)/((1-" + s.substr(6) + "**2)**0.5)*(" + d(s.substr(6)) + ")";
 
-	if ((int)s.find("sin")!=-1)
+	if ((int)s.find("sin")==0)
 		return "cos" + s.substr(3) + "*(" + d(s.substr(3)) + ")";
 
-	if ((int)s.find("cos")!=-1)
+	if ((int)s.find("cos")==0)
 		return "(-sin" + s.substr(3) + ")*(" + d(s.substr(3)) + ")";
-	
-	if ((int)s.find("ctg")!=-1)
+
+	if ((int)s.find("ctg")==0)
 		return "(-1)/(sin" + s.substr(3) + "**2)*(" + d(s.substr(3)) + ")"
 			;
-	if ((int)s.find("tg")!=-1)
+	if ((int)s.find("tg")==0)
 		return "1/(cos" + s.substr(2) + "**2)*(" + d(s.substr(2)) + ")";
-	
-		
+
+
 	if (s == "x")
 		return "1";
 
@@ -91,13 +105,13 @@ int main()
 {
 	freopen("deriv.in", "r", stdin);
 	freopen("deriv.out", "w", stdout);
-		
+
 	string s;
 
 	while(getline(cin, s))
 	{
 		deleteSpaces(s);
-	
+
 		cout << d(s) << endl;
 	}
 
