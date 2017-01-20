@@ -57,7 +57,7 @@ string d(string s)
             if (o1 && o2)
                 return "(" + s + ")*(" + d(s.substr(i + 2) + "*ln(" + s.substr(0, i) + ")") + ")";
             if (o1)
-                return "((" + s + ")*ln(" + st + ")*(" + d(st) + "))";
+                return "((" + s + ")*ln(" + x + ")*(" + d(st) + "))";
             if (o2)
                 return "(" + st + ")*((" + x + ")**(" + st + "-1))*(" + d(x) + ")";
 		}
